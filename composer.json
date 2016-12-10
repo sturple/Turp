@@ -4,6 +4,7 @@
     "description" : "Code IDE on Steroids.",
     "homepage" : "https://github.com/sturple/turpedit",
     "license" : "MIT",
+    "minimum-stability": "dev",
     "require" : {
         "php" : ">=5.5.9",
         "symfony/yaml" : "~3.2",
