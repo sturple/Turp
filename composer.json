@@ -1,0 +1,26 @@
+{
+    "name" : "sturple/turpedit",
+    "type" : "project",
+    "description" : "Code IDE on Steroids.",
+    "homepage" : "https://github.com/sturple/turpedit",
+    "license" : "MIT",
+    "require" : {
+        "php" : ">=5.5.9",
+        "symfony/yaml" : "~3.2",
+        "symfony/console" : "~3.2",
+        "symfony/routing" : "~3.2",
+        "monolog/monolog" : "~1.0",
+        "guzzlehttp/guzzle" : "~6.2"
+        
+    },
+    "require-dev" : {
+        "phpunit/php-code-coverage": "~2.0"
+    },
+    "autoload" : {
+        "psr-4" : {
+            "TurpEdit\\" : "src/TurpEdit"
+        },
+        "files" : ["src/defines.php"]
+    }
+    
+}
