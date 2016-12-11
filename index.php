@@ -10,7 +10,19 @@ if (!is_file($autoload)) {
 
 use TurpEdit\Common\TurpEdit;
 
-$loader = require_once $autoloader;
 
-echo TE_VERSION;
-echo TurpEdit::testFunction();
+$loader = require_once $autoload;
+
+$tedit = TurpEdit::instance(
+    array(
+        'loader' => $loader
+    )
+);
+
+// Process the page
+try {
+    print_R( $tedit->process() );
+} catch (\Exception $e) {
+   // $tedit->fireEvent('onFatalException', new Event(['exception' => $e]));
+    throw $e;
+}
