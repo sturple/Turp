@@ -1,3 +1,4 @@
 .zedstate
 vendor/
 composer.lock
+logs/

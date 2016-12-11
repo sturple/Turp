@@ -4,5 +4,6 @@ security:
         - 127.0.0.1
     blacklist:
         file: 'blacklist.yml'
-        
-     
+
+twig: 
+    path: 'resources/views'

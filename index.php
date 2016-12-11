@@ -23,6 +23,7 @@ $tedit = TurpEdit::instance(
 try {
      $tedit->process() ;
 } catch (\Exception $e) {
+    //$tedit['dispatcher']->dispatch('error.fatalException', new Event(['excpetion'=>$e]));
    // $tedit->fireEvent('onFatalException', new Event(['exception' => $e]));
     throw $e;
 }
