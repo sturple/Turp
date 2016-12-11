@@ -1,5 +1,5 @@
 <?php
-namespace TurpEdit\Common;
+namespace TurpEdit\Common\User;
 
 
 class User 

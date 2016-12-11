@@ -1,0 +1,8 @@
+security:
+    hash: 4c20eed80809af6b0e58a7b7f70e9927
+    whitelist:
+        - 127.0.0.1
+    blacklist:
+        file: 'blacklist.yml'
+        
+     

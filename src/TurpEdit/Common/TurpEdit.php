@@ -4,6 +4,7 @@ namespace TurpEdit\Common;
 
 use Pimple\Container;
 use TurpEdit\Common\Uri;
+use TurpEdit\Common\Configuration;
 
 class TurpEdit extends Container
 {
@@ -29,6 +30,9 @@ class TurpEdit extends Container
         
         $container['editor']  = $container;
         // router
+        $container['config'] = function($c) {
+            return new Configuration();
+        };
         $container['uri'] = function($c) {
           return new Uri();
         };
@@ -52,6 +56,7 @@ class TurpEdit extends Container
     }
     
     public function process() {
+        $this['config']->init();
         return ($this['uri']->getRoute());
         
         

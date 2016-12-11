@@ -21,7 +21,7 @@ $tedit = TurpEdit::instance(
 
 // Process the page
 try {
-    print_R( $tedit->process() );
+     $tedit->process() ;
 } catch (\Exception $e) {
    // $tedit->fireEvent('onFatalException', new Event(['exception' => $e]));
     throw $e;
