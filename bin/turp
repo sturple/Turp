@@ -1,0 +1,20 @@
+#!/usr/bin/env php
+<?php
+
+use Symfony\Component\Console\Application;
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+
+if (!ini_get('date.timezone')) {
+    date_default_timezone_set('UTC');
+}
+
+
+
+$app = new Application('TurpEdit CLI Application', TE_VERSION);
+$app->addCommands(array(
+    new TurpEdit\Console\NewUserCommand()
+
+));
+$app->run();

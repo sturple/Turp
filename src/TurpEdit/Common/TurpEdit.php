@@ -34,7 +34,7 @@ class TurpEdit extends Container
         };
         // user
         $container['user'] = function($c) {
-            return array(); 
+            return new User(); 
         };
         // session
         $container['session'] = function($c) {
