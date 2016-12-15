@@ -2,90 +2,56 @@
 namespace TurpEdit\Common;
 
 use Symfony\Component\EventDispatcher\Event;
-
 use Symfony\Component\HttpFoundation\Request;
-
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\Route;
-
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class Uri 
 {
     
-    var $content ='';
     var $container;
     var $request = null, $session=null;
-    var $twig;
     var $routeparams=array();
     var $content_type = 'text/html';
     var $site_routes = [
-        [
-            'route'     => '_home',
-            'path'      => '/',
-            'auth'      => true,
-            'callback'  => 'TurpEdit\Common\Uri::actionHome'
-        ],
-        [
-            'route'     => '_ajax',
-            'path'      => '/ajax/',
-            'auth'      => true,
-            'callback'  => 'TurpEdit\Common\Uri::actionAjax'
-        ],
-        [
-            'route'     => '_settings',
-            'path'      => '/settings/',
-            'auth'      => true,
-            'callback'  => 'TurpEdit\Common\Uri::actionSettings'
-        ],
-        [
-            'route'     => '_login',
-            'path'      => '/telogin/',
-            'auth'      => false,
-            'callback'  => 'TurpEdit\Common\Uri::actionLogin'
-        ], 
-        [
-            'route'     => '_logout',
-            'path'      => '/logout/',
-            'auth'      => false,
-            'callback'  => 'TurpEdit\Common\Uri::actionLogout'
-        ]
+
+        
     ];
 
     public function __construct()
     {    
 
+        $routes = new \TurpEdit\Common\Configuration();
+        $routes->loadYaml(CONFIG_DIR.ROUTE_FILE);
+        $this->site_routes = $routes->getItems();
+        
         $this->container = \TurpEdit\Common\TurpEdit::instance();
         $this->request = Request::createFromGlobals();
         $this->session = $this->container['session'];
-        $this->twig = $this->container['twig'];
-        $this->getRoute();
+        
     }
     
     /*
     * Logic to determine if valid Route
     */
-    private function getRoute(){
+    public function getRoute(){
          //define routes
          $routes = new RouteCollection();
-         foreach ($this->site_routes as $route){
-             
+         foreach ($this->site_routes as $key =>$route){
+             $this->container['log']->debug('route: '.$key,$route);
              $routes->add(
-                 $route['route'],
+                 $key,
                  new Route(
                      $route['path'],
-                     array(
-                        'controller'=>$route['callback'],
-                        'auth'      =>$route['auth']
-                     )
-                     
+                     $route['defaults']
             ));
         }
         // Getting Request and checking to see if they match
-        
+
         $context = new RequestContext();
         $context->fromRequest($this->request);
         try {
@@ -98,9 +64,8 @@ class Uri
                 call_user_func($this->routeparams['controller']);
             }
             else {
-                $this->actionLogin();
+               $this->sendRedirect('/telogin/');
             }
-            
         }
         catch (\Symfony\Component\Routing\Exception\ResourceNotFoundException $e){
             $this->container['dispatcher']->dispatch('router.ResourceNotFounndException' );
@@ -115,33 +80,42 @@ class Uri
      ***/
      
     private function actionHome() {
-       $this->content = $this->twig->render('index.twig',$this->getTwigData());
+       return $this->render('index.twig');
+    }
+    
+    private function actionProject() {
+        return $this->render('index.twig');
     }
     private function actionAjax(){
         $this->content_type = 'application/json';
-        $this->content = json_encode($data);;
+        //json_encode($data);;
     }
     
     private function actionSettings(){
-        $this->content = 'actionsettings';
+        
     }
     
     private function actionLogin() {
         $data = [
             'content' => 'Login Page'
         ];        
-        if ($this->request->get('csrf') == $this->session->get('csrftoken')){
-            $this->session->remove('csrftoken');
-            $this->session->remove('csrftoken2');
-            $redirect = $this->container['user']->authenticateUser($this->request);
+        if ($this->session->has('csrftoken')){
+            if ($this->request->get('csrf') == $this->session->get('csrftoken')){
+                $this->session->remove('csrftoken');
+                $this->session->remove('csrftoken2');
+                if ($this->container['user']->authenticateUser($this->request) === true){
+                    return $this->sendRedirect('/',302);
+                };
+            }            
         }
-        $this->content = $this->twig->render('login.twig',$this->getTwigData($data));
+
+        return $this->render('login.twig',$data);
     }
     
-    private function actionLogout($p) {
+    private function actionLogout() {
         //clears all session data
         $this->container['session']->invalidate();
-        $this->actionLogin();
+        return $this->sendRedirect('/telogin/',302);
     }
     
     private function getTwigData($data=array()){
@@ -151,22 +125,26 @@ class Uri
         return $data;
     }
     
-    
     /***
      * 
      * Response
      *
      ***/
-    public function res(){
+     
+    private function sendRedirect($url, $code=301){
+        $response =  new \Symfony\Component\HttpFoundation\RedirectResponse($url, $code);
+        $response->send();
+    }
+    public function render($template,$data=array()){
         $response = new Response(
             'Content',
             Response::HTTP_OK,
             array('content-type'=> $this->content_type)
         );
         $response->setCharset('utf8');
-        $response->setContent($this->content);
-        $response->send();
+        $response->setContent($this->container['twig']->render($template,$this->getTwigData($data)));
+        $response->send();            
         
+
     }
-    
 }
