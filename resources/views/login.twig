@@ -1,2 +1,16 @@
----
+{% extends 'base.twig' %}
+{% block content %}
+<div class="container">
+   
+    <form action="/telogin/" method="POST" >
+        <input type="text" placeholder="user" name="user" />
+        <input type="text" placeholder="pass" name="pass" />
+        <input type="text" name="csrf" value="{{form_csrf()}}" />
+        <input type="submit" value="Login" />
+        
+    </form>
+    
+</div>
+
 {{content}}
+{% endblock %}

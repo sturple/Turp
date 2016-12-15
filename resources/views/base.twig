@@ -1,0 +1,22 @@
+{# base.twig #}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="shortcut icon" type="image/x-icon" href="{{assets}}/favicon.ico">
+        {% block head %}
+            <!-- This is where you'll put template-specific stuff that needs to go in the head tags like custom meta tags, etc. -->
+        {% endblock %}
+        {% block styles %}
+           
+        {% endblock %}
+    </head>
+    <body >
+    {% block header%} {% endblock %}    
+    {% block content %}<!-- The template's main content will go here. -->{% endblock %}
+    {% block footer%}
+    <pre>{{dump()}}</pre>
+    {% endblock %}    
+    {% block scripts %}{% endblock %}    
+    </body>
+</html>
