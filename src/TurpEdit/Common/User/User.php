@@ -26,7 +26,7 @@ class User extends Configuration
             // need to do check see if exists
             $userfile = USER_DIR . $user.'.yml';
             $this->loadYaml($userfile);
-            if (($this->value('password') == hash_hmac('sha256', $te['settings']->value('security.hash'), $password)) or true){
+            if (($this->value('password') === hash_hmac('sha256', $te['settings']->value('security.hash'), $password)) or true){
                 $te['session']->set('user',$this);
                 $this->setExpire();
                 return true;

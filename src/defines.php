@@ -12,4 +12,5 @@ define('PROJECT_DIR', ROOT_DIR .'project/');
 define('USER_DIR', ROOT_DIR .'user/');
 define('CONFIG_DIR', ROOT_DIR .'config/');
 define('CONFIG_FILE', 'config.yml');
+define('ROUTE_FILE', 'routes.yml');
 define('LOG_DIR', ROOT_DIR .'logs/');

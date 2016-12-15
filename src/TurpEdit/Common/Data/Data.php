@@ -5,25 +5,20 @@ namespace TurpEdit\Common\Data;
 class Data 
 {
     protected $items;
-    
     public function __construct(array $items = array())
     {
         $this->items = $items;
-      
     }
-    
 
-    
     public function value($name, $default=null, $seperator='.')
     {
         return $this->get($name, $default, $seperator);
     }
-    
-    
-    
+
     public function dump(){
         return $this->items;
     }
+
     public function get($name, $default = null, $separator ='.')
     {
         $path = explode($separator, $name);
@@ -40,10 +35,14 @@ class Data
         return $current;
     }
 
+    public function getItems(){
+        return $this->items;
+    }
+
     public function setItems($items=array()){
         $this->items = $items;
     }
-    
+
     public function set($name, $value, $separator = null)
     {
         $path = explode($separator, $name);
@@ -67,8 +66,5 @@ class Data
         }
         $current = $value;
         return $this;
-    }  
-    
-
-
+    }
 }

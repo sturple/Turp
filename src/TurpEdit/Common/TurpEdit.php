@@ -102,6 +102,6 @@ class TurpEdit extends Container
     }
     
     public function process() {
-        $this['uri']->res();
+        $this['uri']->getRoute();
     }
 }
