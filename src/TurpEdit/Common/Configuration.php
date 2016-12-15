@@ -11,18 +11,21 @@ class Configuration extends Data
     var $file;
 
     public function loadYaml($file){
-        $contents = file_get_contents($file);
-        if ($contents !== false ){
-            $this->file = $file;
-            try {
-                $this->setItems(Yaml::parse($contents));
-            } catch (ParseException $e) {
-                // parce exception error
+        if (file_exists($file)){
+            $contents = file_get_contents($file);
+            if ($contents !== false ){
+                $this->file = $file;
+                try {
+                    $this->setItems(Yaml::parse($contents));
+                } catch (ParseException $e) {
+                    // parce exception error
+                }
             }
+            else {
+                // throw exception file does not exists
+            }            
         }
-        else {
-            // throw exception file does not exists
-        }
+
     }
     
     public function saveYaml(){
