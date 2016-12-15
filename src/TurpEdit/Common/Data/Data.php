@@ -40,6 +40,10 @@ class Data
         return $current;
     }
 
+    public function setItems($items=array()){
+        $this->items = $items;
+    }
+    
     public function set($name, $value, $separator = null)
     {
         $path = explode($separator, $name);
@@ -63,6 +67,8 @@ class Data
         }
         $current = $value;
         return $this;
-    }    
+    }  
+    
+
 
 }
