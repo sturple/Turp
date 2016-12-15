@@ -1,6 +1,6 @@
 <?php
 namespace TurpEdit\Console;
-use TurpEdit\Common\User;
+use TurpEdit\Common\User\User;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Helper\Helper;
 use Symfony\Component\Console\Question\ChoiceQuestion;
@@ -35,6 +35,7 @@ class NewUserCommand extends ConsoleCommand
                 InputOption::VALUE_REQUIRED,
                 "The password. Note that this option is not recommended because the password will be visible by users listing the processes."
             )
+            
             ->addOption(
                 'email',
                 'e',
@@ -65,6 +66,7 @@ class NewUserCommand extends ConsoleCommand
                 InputOption::VALUE_REQUIRED,
                 'The state of the account. Can be either `enabled` or `disabled`. [default: "enabled"]'
             )
+            
             ->setDescription('Creates a new user')
             ->setHelp('The <info>new-user</info> creates a new user file in user/accounts/ folder')
         ;
@@ -103,6 +105,7 @@ class NewUserCommand extends ConsoleCommand
             $username = $helper->ask($this->input, $this->output, $question);
         } else {
             $username = $this->options['user'];
+            
         }
 
 
@@ -199,9 +202,10 @@ class NewUserCommand extends ConsoleCommand
         $username = strtolower($username);
 
         // Create user object and save it
+        $data['user'] = $username;
         $user = new User($data);
         $this->output->writeln('');
-        $this->output->writeln('<green>Success!</green> User <cyan>' . print_R($user->save()) . '</cyan> created.');
+        $this->output->writeln('<green>Success!</green> User <cyan>' . print_R($user->setUser()) . '</cyan> created.');
     }
 
     /**
