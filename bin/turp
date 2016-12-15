@@ -3,18 +3,22 @@
 
 use Symfony\Component\Console\Application;
 
-require_once __DIR__ . '/../vendor/autoload.php';
-
 
 if (!ini_get('date.timezone')) {
     date_default_timezone_set('UTC');
 }
+$autoload = __DIR__ . '/../vendor/autoload.php';
+if (!is_file($autoload)) {
+    die("Please run: <i>bin/ install</i>");
+}
 
+$loader = require_once $autoload;
 
 
 $app = new Application('TurpEdit CLI Application', TE_VERSION);
 $app->addCommands(array(
-    new TurpEdit\Console\NewUserCommand()
+    new TurpEdit\Console\NewUserCommand(),
+    new Symfony\Component\Yaml\Command\LintCommand()
 
 ));
 $app->run();
