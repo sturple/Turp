@@ -6,34 +6,33 @@ use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\EventDispatcher\Event;
 
-class Configuration 
+class Configuration extends Data
 {
-    var $config,
-        $blacklist,
-        $user,
-        $container;
-    
-    
-    public function __construct($container){
-        $this->container = $container;
-    }
-    
-    public function init() {
-        $te = TurpEdit::instance();
-        try {
-            // loading configurations
-            $this->config = new Data(Yaml::parse(file_get_contents(CONFIG_DIR . CONFIG_FILE)));
-            
-            // loading blacklist
-            $blacklistFile = $this->config->value('security.blacklist.file', false);
-            if (false ==! $blacklistFile){
-                $this->blacklist = new Data(Yaml::parse(file_get_contents(CONFIG_DIR . $blacklistFile)));
+    var $file;
+
+    public function loadYaml($file){
+        $contents = file_get_contents($file);
+        if ($contents !== false ){
+            $this->file = $file;
+            try {
+                $this->setItems(Yaml::parse($contents));
+            } catch (ParseException $e) {
+                // parce exception error
             }
-            $this->container['dispatcher']->dispatch('config.afterload');
-           
-        } catch (ParseException $e) {   
-            $te['log']->error('Configuration Error ' . $e);
         }
-        
+        else {
+            // throw exception file does not exists
+        }
     }
+    
+    public function saveYaml(){
+       $yaml = Yaml::dump($this->items);
+       file_put_contents($this->file,$yaml);
+       return true;
+
+    }
+    
+
+    
+   
 }
