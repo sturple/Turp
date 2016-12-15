@@ -9,7 +9,7 @@ if (!defined('TE_ROOT')){
 
 define('ROOT_DIR', TE_ROOT . '/');
 define('PROJECT_DIR', ROOT_DIR .'project/');
-
+define('USER_DIR', ROOT_DIR .'user/');
 define('CONFIG_DIR', ROOT_DIR .'config/');
 define('CONFIG_FILE', 'config.yml');
 define('LOG_DIR', ROOT_DIR .'logs/');

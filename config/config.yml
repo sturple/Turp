@@ -1,5 +1,5 @@
 security:
-    hash: 4c20eed80809af6b0e58a7b7f70e9927
+    hash: 63154c7814aeb3b2fb2ce06e583556b01a581655ae8f492182d13f4721f04440
     whitelist:
         - 127.0.0.1
     blacklist:
@@ -7,3 +7,8 @@ security:
 
 twig: 
     path: 'resources/views'
+    env:
+        debug: true
+        
+user:
+    expire: 2
