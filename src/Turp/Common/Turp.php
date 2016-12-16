@@ -1,6 +1,6 @@
 <?php
 
-namespace TurpEdit\Common;
+namespace Turp\Common;
 
 use Pimple\Container;
 
@@ -8,14 +8,15 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
-use TurpEdit\Common\Uri;
-use TurpEdit\Common\User\User;
-use TurpEdit\Common\Configuration;
-use TurpEdit\Common\Event\TurpSubscriber;
+use Turp\Common\Uri;
+use Turp\Common\User\User;
+use Turp\Common\Configuration;
+use Turp\Common\Event\TurpSubscriber;
 
-class TurpEdit extends Container
+class Turp extends Container
 {
     protected static $instance;
+    
     public static function instance(array $values = [])
     {
         if (!self::$instance) {
@@ -32,7 +33,7 @@ class TurpEdit extends Container
     protected static function load(array $values)
     {
         $container = new static($values);
-        $container['editor']  = $container;
+        $container['turp']  = $container;
 
         // session
         $container['session'] = function($c) {

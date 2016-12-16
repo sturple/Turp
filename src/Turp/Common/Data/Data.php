@@ -1,6 +1,6 @@
 <?php
 
-namespace TurpEdit\Common\Data;
+namespace Turp\Common\Data;
 
 class Data 
 {
@@ -15,7 +15,8 @@ class Data
         return $this->get($name, $default, $seperator);
     }
 
-    public function dump(){
+    public function dump()
+    {
         return $this->items;
     }
 

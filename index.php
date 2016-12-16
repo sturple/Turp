@@ -13,7 +13,7 @@ use TurpEdit\Common\TurpEdit;
 
 $loader = require_once $autoload;
 
-$tedit = TurpEdit::instance(
+$tedit = Turp::instance(
     array(
         'loader' => $loader
     )

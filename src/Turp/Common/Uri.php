@@ -1,5 +1,5 @@
 <?php
-namespace TurpEdit\Common;
+namespace Turp\Common;
 
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,8 +13,8 @@ use Symfony\Component\HttpFoundation\Response;
 class Uri 
 {
     
-    var $container;
-    var $request = null, $session=null;
+    var $turp;
+    var $request = null;
     var $routeparams=array();
     var $content_type = 'text/html';
     var $site_routes = [
@@ -25,13 +25,13 @@ class Uri
     public function __construct()
     {    
 
-        $routes = new \TurpEdit\Common\Configuration();
+        $routes = new \Turp\Common\Configuration();
         $routes->loadYaml(CONFIG_DIR.ROUTE_FILE);
         $this->site_routes = $routes->getItems();
         
-        $this->container = \TurpEdit\Common\TurpEdit::instance();
+        $this->turp = \Turp\Common\Turp::instance();
         $this->request = Request::createFromGlobals();
-        $this->session = $this->container['session'];
+       
         
     }
     
@@ -42,7 +42,7 @@ class Uri
          //define routes
          $routes = new RouteCollection();
          foreach ($this->site_routes as $key =>$route){
-             $this->container['log']->debug('route: '.$key,$route);
+             $this->turp['log']->debug('route: '.$key,$route);
              $routes->add(
                  $key,
                  new Route(
@@ -59,7 +59,7 @@ class Uri
             $this->routeparams = $matcher->match($this->request->getPathInfo());
             
             // Check if Authenticated by session of User or if auth is not required.
-            if ( ($this->session->has('user') and $this->session->get('user')->checkAuthentication()) or !$this->routeparams['auth'] ){
+            if ( ($this->turp['session']->has('user') and $this->turp['session']->get('user')->checkAuthentication()) or !$this->routeparams['auth'] ){
                 //calls user function
                 call_user_func($this->routeparams['controller']);
             }
@@ -68,7 +68,7 @@ class Uri
             }
         }
         catch (\Symfony\Component\Routing\Exception\ResourceNotFoundException $e){
-            $this->container['dispatcher']->dispatch('router.ResourceNotFounndException' );
+            $this->turp['dispatcher']->dispatch('router.ResourceNotFounndException' );
             print_R($e->getMessage());
         }                    
     }
@@ -101,8 +101,8 @@ class Uri
         ];        
         if ($this->session->has('csrftoken')){
             if ($this->request->get('csrf') == $this->session->get('csrftoken')){
-                $this->session->remove('csrftoken');
-                $this->session->remove('csrftoken2');
+                $this->turp['session']->remove('csrftoken');
+                $this->turp['session']->remove('csrftoken2');
                 if ($this->container['user']->authenticateUser($this->request) === true){
                     return $this->sendRedirect('/',302);
                 };
@@ -114,13 +114,13 @@ class Uri
     
     private function actionLogout() {
         //clears all session data
-        $this->container['session']->invalidate();
+        $this->turp['session']->invalidate();
         return $this->sendRedirect('/telogin/',302);
     }
     
     private function getTwigData($data=array()){
-        $data['settings']  = $this->container['settings'];
-        $data['user'] = $this->container['session']->get('user');  
+        $data['settings']  = $this->turp['settings'];
+        $data['user'] = $this->turp['session']->get('user');  
         $data = array_merge($data,$this->routeparams);
         return $data;
     }

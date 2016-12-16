@@ -1,7 +1,7 @@
 <?php
-namespace TurpEdit\Common;
+namespace Turp\Common;
 
-use TurpEdit\Common\Data\Data;
+use Turp\Common\Data\Data;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\EventDispatcher\Event;
