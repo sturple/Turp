@@ -1,7 +1,7 @@
 {
-    "name" : "sturple/Turp",
+    "name" : "sturple/turp",
     "type" : "project",
-    "description" : "Code IDE on Steroids.",
+    "description" : "Code Developer Work Bench",
     "homepage" : "https://github.com/sturple/Turp",
     "license" : "MIT",
     "repository" : [
@@ -26,7 +26,7 @@
     },
     "autoload" : {
         "psr-4" : {
-            "TurpEdit\\" : "src/TurpEdit"
+            "Turp\\" : "src/Turp"
         },
         "files" : ["src/defines.php"]
     }

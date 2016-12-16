@@ -1,6 +1,6 @@
 <?php
 
-namespace TurpEdit;
+namespace Turp;
 
 // Ensure vendor libraries exist
 $autoload = __DIR__ . '/vendor/autoload.php';
@@ -8,7 +8,7 @@ if (!is_file($autoload)) {
     die("Please run: <i>bin/ install</i>");
 }
 
-use TurpEdit\Common\TurpEdit;
+use Turp\Common\Turp;
 
 
 $loader = require_once $autoload;
