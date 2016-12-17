@@ -10,6 +10,7 @@ use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Turp\Common\Uri;
 use Turp\Common\User\User;
+use Turp\Common\Twig\Twig;
 use Turp\Common\Configuration;
 use Turp\Common\Event\TurpSubscriber;
 
@@ -33,6 +34,15 @@ class Turp extends Container
     protected static function load(array $values)
     {
         $container = new static($values);
+        
+        /*
+        
+        $whoops = new \Whoops\Run;
+        $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
+        $whoops->register();
+        
+        */
+        
         $container['turp']  = $container;
 
         // session
@@ -41,14 +51,21 @@ class Turp extends Container
             $session->start();
             return $session;
         };
+        $container['debugger'] = function($c) {
+            return null;
+
+        };
 
         //monolog/logger setup
-        $container['log'] = new Logger('TurpEdit');
+        $container['log'] = new Logger('Turp');
         $container['log']->pushHandler(new StreamHandler(LOG_DIR.'error.log', Logger::DEBUG));
 
         // event dispacher;
-        $container['dispatcher'] = new EventDispatcher();
-        $container['dispatcher']->addSubscriber(new TurpSubscriber());
+        $container['dispatcher'] = function($c){
+            $ed  = new EventDispatcher();
+            $ed->addSubscriber(new TurpSubscriber());
+            return $ed;
+        };
 
         // router
         $container['settings'] = function($c) {
@@ -57,31 +74,9 @@ class Turp extends Container
             return $settings;
         };
         $container['twig'] = function($c) {
-            $path = ROOT_DIR.$c['settings']->value('twig.path');
-            $loader = new \Twig_Loader_Filesystem($path);
-            $params = $c['settings']->value('twig.env');
-            $twig = new \Twig_Environment($loader, $params);
-            $twig->addExtension(new \Twig_Extension_Debug());
-            $twig->addFunction(
-                new \Twig_SimpleFunction(
-                    'form_csrf',
-                    function($lock_to = null) use(&$c) {
-                        
-                        if (!$c['session']->has('csrftoken')) {
-                            $c['session']->set('csrftoken', bin2hex(random_bytes(32)));
-                        }
-                        if (!$c['session']->has('csrftoken2')) {
-                            $c['session']->set('csrftoken2', random_bytes(32));
-                        } 
-                        if (empty($lock_to)) {
-                            return $c['session']->get('csrftoken');
-                        }
-                        return hash_hmac('sha256', $lock_to, $c['session']->get('csrftoken2'));
-                    }
-                )                
-            );  
-            return $twig; 
-  
+            $twig = new Twig($c);
+            $twig->init();
+            return $twig;
         };
 
         // user
