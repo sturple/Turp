@@ -25,17 +25,19 @@ class Configuration extends Data
                 // throw exception file does not exists
             }            
         }
-
     }
     
     public function saveYaml(){
-       $yaml = Yaml::dump($this->items);
-       file_put_contents($this->file,$yaml);
-       return true;
-
+        if (!empty($this->file)){
+           $yaml = Yaml::dump($this->items);
+           file_put_contents($this->file,$yaml);
+           return true;
+            
+        }
+        else {
+            // throw exception
+            print_R('Empty file');
+        }
+        return false;
     }
-    
-
-    
-   
 }

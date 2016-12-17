@@ -17,45 +17,31 @@ class Uri
     var $request = null;
     var $routeparams=array();
     var $content_type = 'text/html';
-    var $site_routes = [
-
-        
-    ];
+    var $site_routes = [];
+    var $routeCollection;
 
     public function __construct()
-    {    
-
+    {
         $routes = new \Turp\Common\Configuration();
         $routes->loadYaml(CONFIG_DIR.ROUTE_FILE);
         $this->site_routes = $routes->getItems();
         
         $this->turp = \Turp\Common\Turp::instance();
         $this->request = Request::createFromGlobals();
-       
-        
     }
-    
+
     /*
     * Logic to determine if valid Route
     */
     public function getRoute(){
          //define routes
-         $routes = new RouteCollection();
-         foreach ($this->site_routes as $key =>$route){
-             $this->turp['log']->debug('route: '.$key,$route);
-             $routes->add(
-                 $key,
-                 new Route(
-                     $route['path'],
-                     $route['defaults']
-            ));
-        }
+        $this->configureRouter();
         // Getting Request and checking to see if they match
 
         $context = new RequestContext();
         $context->fromRequest($this->request);
         try {
-            $matcher = new UrlMatcher($routes, $context);      
+            $matcher = new UrlMatcher($this->routeCollection, $context);      
             $this->routeparams = $matcher->match($this->request->getPathInfo());
             
             // Check if Authenticated by session of User or if auth is not required.
@@ -64,13 +50,48 @@ class Uri
                 call_user_func($this->routeparams['controller']);
             }
             else {
-               $this->sendRedirect('/telogin/');
+               $this->sendRedirect('/login/');
             }
         }
         catch (\Symfony\Component\Routing\Exception\ResourceNotFoundException $e){
             $this->turp['dispatcher']->dispatch('router.ResourceNotFounndException' );
-            print_R($e->getMessage());
-        }                    
+        }      
+        catch (\Symfony\Component\Routing\Exception\MethodNotAllowedException $e){
+            $this->turp['dispatcher']->dispatch('router.MethodNotAllowedException' );
+        }
+    }
+    
+    private function configureRouter(){
+        $this->routeCollection = new RouteCollection();
+         foreach ($this->site_routes as $key =>$route){
+             $requirements = empty($route['requirements']) ? [] : $route['requirements'];
+             $options = empty($route['options']) ? [] : $route['options'];
+             $host = empty($route['host']) ? '' : $route['host'];
+             $schemes = empty($route['schemes']) ? [] : $route['schemes'];
+             $methods = empty($route['methods']) ? [] : $route['methods'];
+             
+             $this->routeCollection->add(
+                 $key,
+                 new Route(
+                     $route['path'],
+                     $route['defaults'], //defaults
+                     $requirements,
+                     $options,
+                     $host,
+                     $schemes,
+                     $methods
+                     
+                     
+            ));
+        }        
+    }
+    
+    /**
+     *  Diagnostic function console command
+     **/
+    public function getRouteCollection() {
+        $this->configureRouter();
+        return $this->routeCollection;
     }
     
     /***
@@ -99,13 +120,13 @@ class Uri
         $data = [
             'content' => 'Login Page'
         ];        
-        if ($this->session->has('csrftoken')){
-            if ($this->request->get('csrf') == $this->session->get('csrftoken')){
+        if ($this->turp['session']->has('csrftoken')){
+            if ($this->request->get('csrf') == $this->turp['session']->get('csrftoken')){
                 $this->turp['session']->remove('csrftoken');
                 $this->turp['session']->remove('csrftoken2');
-                if ($this->container['user']->authenticateUser($this->request) === true){
+                if ($this->turp['user']->authenticateUser($this->request) === true){
                     return $this->sendRedirect('/',302);
-                };
+                }
             }            
         }
 
@@ -115,7 +136,7 @@ class Uri
     private function actionLogout() {
         //clears all session data
         $this->turp['session']->invalidate();
-        return $this->sendRedirect('/telogin/',302);
+        return $this->sendRedirect('/login/',302);
     }
     
     private function getTwigData($data=array()){
@@ -142,7 +163,7 @@ class Uri
             array('content-type'=> $this->content_type)
         );
         $response->setCharset('utf8');
-        $response->setContent($this->container['twig']->render($template,$this->getTwigData($data)));
+        $response->setContent($this->turp['twig']->twig->render($template,$this->getTwigData($data)));
         $response->send();            
         
 

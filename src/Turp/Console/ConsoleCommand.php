@@ -1,6 +1,6 @@
 <?php
 
-namespace TurpEdit\Console;
+namespace Turp\Console;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -24,7 +24,7 @@ class ConsoleCommand extends Command
     protected function displayGPMRelease()
     {
         $this->output->writeln('');
-        $this->output->writeln('TurpEdit Console');
+        $this->output->writeln('Turp Console');
         $this->output->writeln('');
     }
 }

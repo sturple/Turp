@@ -44,7 +44,7 @@ class Data
         $this->items = $items;
     }
 
-    public function set($name, $value, $separator = null)
+    public function set($name, $value, $separator = '.')
     {
         $path = explode($separator, $name);
         $current = &$this->items;

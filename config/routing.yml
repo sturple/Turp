@@ -1,0 +1,29 @@
+_home:
+    path: /
+    defaults: { controller: Turp\Common\Uri::actionHome, auth: true }
+
+_ajax:
+    path: /ajax/
+    defaults: { controller: Turp\Common\Uri::actionAjax, auth: true }
+    
+    
+_settings:
+    path: /settings/{type}/
+    defaults: { controller: Turp\Common\Uri::actionSettings, auth: true }    
+    methods:  [GET, POST]
+    requirements:
+        type: '\d+'
+_login:
+    path: /login/
+    defaults: { controller: Turp\Common\Uri::actionLogin, auth: false }
+    
+_logout:
+    path: /logout/
+    defaults: { controller: Turp\Common\Uri::actionLogout, auth: false }
+    
+_project:
+    path: /project/{name}/
+    defaults: { controller: Turp\Common\Uri::actionProject, auth: false }  
+    methods: [POST, GET]
+    requirements:
+        name: '[a-zA-Z0-9]{1,}'

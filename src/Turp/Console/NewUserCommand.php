@@ -1,6 +1,6 @@
 <?php
-namespace TurpEdit\Console;
-use TurpEdit\Common\User\User;
+namespace Turp\Console;
+use Turp\Common\User\User;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Helper\Helper;
 use Symfony\Component\Console\Question\ChoiceQuestion;

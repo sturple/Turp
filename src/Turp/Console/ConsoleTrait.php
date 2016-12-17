@@ -1,5 +1,5 @@
 <?php
-namespace TurpEdit\Console;
+namespace Turp\Console;
 
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\ArrayInput;

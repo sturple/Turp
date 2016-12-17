@@ -13,14 +13,22 @@ class TurpSubscriber implements EventSubscriberInterface
     {
         return array(
             'router.ResourceNotFounndException' => 'onResourceNotFound',
+            'router.MethodNotAllowedException' =>'onMethodNotAllowedException',
         );
     }
 
+    public function onMethodNotAllowedException(Event $e)
+    {
+        $this->getLogger()->error('Method not allowed ' . print_R($e,true));
+    }
+    
     public function onResourceNotFound(Event $e)
     {
-        $log = \Turp\Common\Turp::instance()['log'];
-        $log->error('Resource Not Found ' . print_R($e,true));
+       $this->getLogger()->error('Resource Not Found ' . print_R($e,true));
     }
-
+    
+    public function getLogger(){
+        return \Turp\Common\Turp::instance()['log'];;
+    }
   
 }

@@ -15,10 +15,12 @@ if (!is_file($autoload)) {
 $loader = require_once $autoload;
 
 
-$app = new Application('TurpEdit CLI Application', TE_VERSION);
-$app->addCommands(array(
-    new TurpEdit\Console\NewUserCommand(),
-    new Symfony\Component\Yaml\Command\LintCommand()
-
-));
+$app = new Application('Turp CLI Application', TE_VERSION);
+$app->addCommands(
+    [
+        new Turp\Console\NewUserCommand(),
+        new Symfony\Component\Yaml\Command\LintCommand(),
+        new Turp\Console\RouterDebugCommand(),    
+    ]
+);
 $app->run();
