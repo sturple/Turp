@@ -24,6 +24,6 @@ _logout:
 _project:
     path: /project/{name}/
     defaults: { controller: Turp\Common\Uri::actionProject, auth: false }  
-    methods: [POST, GET]
+    methods: [POST]
     requirements:
         name: '[a-zA-Z0-9]{1,}'

@@ -12,3 +12,8 @@ twig:
         
 user:
     expire: 2
+plugins:
+    -
+        name: aceeditor
+        class: '\Turp\Plugin\Aceeditor'
+        routes: '/resources/config/routing.yml'

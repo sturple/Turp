@@ -18,7 +18,7 @@ class Configuration extends Data
                 try {
                     $this->setItems(Yaml::parse($contents));
                 } catch (ParseException $e) {
-                    // parce exception error
+                    Turp::instance()['log']->warning('Turp\Common\Configuration::loadYaml ' .$file .' '. $e->getMessage);
                 }
             }
             else {

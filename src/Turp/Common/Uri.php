@@ -22,17 +22,27 @@ class Uri
 
     public function __construct()
     {
-        $routes = new \Turp\Common\Configuration();
-        $routes->loadYaml(CONFIG_DIR.ROUTE_FILE);
-        $this->site_routes = $routes->getItems();
-        
+        $this->loadRoutes();
         $this->turp = \Turp\Common\Turp::instance();
         $this->request = Request::createFromGlobals();
     }
 
+
+    public function loadRoutes(){
+        $routes = new \Turp\Common\Configuration();
+        $routes->loadYaml(CONFIG_DIR.ROUTE_FILE);
+        $this->site_routes = $routes->getItems();    
+        $plugins = \Turp\Common\Turp::instance()['plugins'];
+        foreach ($plugins->getPlugins() as $plugin){
+            $this->site_routes = array_merge($this->site_routes,$plugin->getRoutes()->getItems());
+        }
+        
+        
+    }
     /*
     * Logic to determine if valid Route
     */
+    
     public function getRoute(){
          //define routes
         $this->configureRouter();

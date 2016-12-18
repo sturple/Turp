@@ -21,7 +21,8 @@
         "symfony/event-dispatcher" : "~3.0",
         "twig/twig" : "~1.28",
         "filp/whoops" : "~2.0",
-        "symfony/var-dumper" : "~3.0"
+        "symfony/var-dumper" : "~3.0",
+        "symfony/finder" : "~3.0"
     },
     "require-dev" : {
         "phpunit/php-code-coverage": "~2.0"

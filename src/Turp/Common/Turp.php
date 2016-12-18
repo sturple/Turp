@@ -6,6 +6,7 @@ use Pimple\Container;
 
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Finder\Finder;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Turp\Common\Uri;
@@ -13,6 +14,7 @@ use Turp\Common\User\User;
 use Turp\Common\Twig\Twig;
 use Turp\Common\Configuration;
 use Turp\Common\Event\TurpSubscriber;
+use Turp\Common\Plugin;
 
 class Turp extends Container
 {
@@ -34,15 +36,10 @@ class Turp extends Container
     protected static function load(array $values)
     {
         $container = new static($values);
-        
-        /*
-        
         $whoops = new \Whoops\Run;
         $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
         $whoops->register();
-        
-        */
-        
+ 
         $container['turp']  = $container;
 
         // session
@@ -59,11 +56,18 @@ class Turp extends Container
         //monolog/logger setup
         $container['log'] = new Logger('Turp');
         $container['log']->pushHandler(new StreamHandler(LOG_DIR.'error.log', Logger::DEBUG));
+        
+        
+        
+        $container['plugin'] = function ($c) {
+            return new Plugin('turp.core'); 
+        };        
 
         // event dispacher;
         $container['dispatcher'] = function($c){
             $ed  = new EventDispatcher();
             $ed->addSubscriber(new TurpSubscriber());
+            $ed->addSubscriber($c['plugin']);
             return $ed;
         };
 
@@ -88,16 +92,36 @@ class Turp extends Container
         $container['projects'] = function ($c) {
             return array();
         };
-        $container['plugins'] = function ($c) {
-            return array(); 
-        };
+
         $container['uri'] = function($c) {
           return new Uri();
-        };        
+        };   
+        
+        $container['plugins'] = function($c){
+            return new Plugins();
+        };
+        
+        // autoload plugins
+        spl_autoload_register(function($class) use($container){
+            $prefix = "Turp\\Plugin";
+            if (false !== strpos($class, $prefix)) {
+                $class = substr($class, strlen($prefix));
+                $path = strtolower(ltrim(preg_replace('#\\\|_(?!.+\\\)#', '/', $class), '/'));
+            
+                $file = PLUGIN_DIR. "{$path}/{$path}.php";
+                if (file_exists($file)){
+                    return include_once($file);
+                }
+            }
+            return false;
+            
+        });       
+        
+        
         return $container;
     }
-    
     public function process() {
+        $this['plugins'];
         $this['uri']->getRoute();
     }
 }

@@ -1,0 +1,10 @@
+_editor_home:
+    path: /editor/
+    defaults: { controller: Turp\Plugin\Aceeditor::actionHome, auth: false }
+    
+_editor_ajax:
+    path: /editor/ajax/
+    defaults: { controller: Turp\Plugin\Aceeditor::actionAjax, auth: false }  
+    methods: [POST]
+    requirements:
+        name: '[a-zA-Z0-9]{1,}'
